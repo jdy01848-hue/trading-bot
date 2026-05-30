@@ -362,6 +362,13 @@ def save_journal(signal, price, confidence, sl, tp, lots, reasons):
     except:
         pass
 
+def send_weekly_analytics():
+    try:
+        from analytics import generate_report
+        send(generate_report())
+    except Exception as e:
+        send(f"⚠️ خطأ التحليل: {e}")
+
 def send_daily_report():
     try:
         today = datetime.now().strftime('%Y-%m-%d')
