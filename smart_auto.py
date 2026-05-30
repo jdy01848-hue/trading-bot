@@ -22,18 +22,6 @@ def run_tracker():
 
 tracker_thread = threading.Thread(target=run_tracker, daemon=True)
 tracker_thread.start()
-from auto_tracker import check_trade
-
-def run_tracker():
-    while True:
-        try:
-            check_trade()
-        except:
-            pass
-        time.sleep(60)
-
-tracker_thread = threading.Thread(target=run_tracker, daemon=True)
-tracker_thread.start()
 from datetime import datetime, timezone
 
 TOKEN = "8793823731:AAG1TKA6-6SZzqc03aAV3UWnOWgrPpgZFSA"
