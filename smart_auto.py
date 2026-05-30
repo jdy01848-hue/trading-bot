@@ -10,6 +10,7 @@ from candle_patterns import candle_signal
 from telegram_bot import listener_thread, send_trade_buttons
 from price_monitor import save_active_trade, check_trade
 from volume_engine import get_volume_summary
+from session_manipulation import get_manipulation_summary
 import time
 import threading
 from auto_tracker import check_trade
@@ -690,6 +691,10 @@ def analyze(is_hourly=True):
         fib_levels, fib_high, fib_low = calc_fibonacci(fib_highs, fib_lows, fib_direction)
         nearest_fib, fib_dist, near_fib = get_nearest_fib(price_data[-1], fib_levels, atr1)
 
+        # Session Manipulation
+        manip_msg, manip_score, manip_type = get_manipulation_summary(
+            highs1, lows1, closes1, hour_utc)
+
         # Volume Engine
         vol_msg, vol_score, vol_ratio = get_volume_summary(closes1, highs1, lows1)
 
@@ -916,6 +921,7 @@ def analyze(is_hourly=True):
 15M {st15} | ADX:{adx15} {str15_} | RSI:{r15}
 ━━━━━━━━━━━━━━━━
 {bos_text}🔲 OB: {ob_text}
+🎭 تلاعب: {manip_msg}
 📊 زخم: {vol_msg}
 🕯 {candle_text} | 📰 {news_msg}
 ━━━━━━━━━━━━━━━━
