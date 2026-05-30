@@ -9,6 +9,7 @@ from confluence import calc_confluence
 from candle_patterns import candle_signal
 from telegram_bot import listener_thread, send_trade_buttons
 from price_monitor import save_active_trade, check_trade
+from volume_engine import get_volume_summary
 import time
 import threading
 from auto_tracker import check_trade
@@ -689,6 +690,9 @@ def analyze(is_hourly=True):
         fib_levels, fib_high, fib_low = calc_fibonacci(fib_highs, fib_lows, fib_direction)
         nearest_fib, fib_dist, near_fib = get_nearest_fib(price_data[-1], fib_levels, atr1)
 
+        # Volume Engine
+        vol_msg, vol_score, vol_ratio = get_volume_summary(closes1, highs1, lows1)
+
         # Liquidity Engine
         liq_data, liq_highs, liq_lows = get_data("1h", 50)
         has_liq, liq_score, liq_signals, liq_high, liq_low = liquidity_engine(
@@ -912,6 +916,7 @@ def analyze(is_hourly=True):
 15M {st15} | ADX:{adx15} {str15_} | RSI:{r15}
 ━━━━━━━━━━━━━━━━
 {bos_text}🔲 OB: {ob_text}
+📊 زخم: {vol_msg}
 🕯 {candle_text} | 📰 {news_msg}
 ━━━━━━━━━━━━━━━━
 🔀 BUY: {cf_buy} | SELL: {cf_sell}
