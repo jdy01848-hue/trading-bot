@@ -1018,7 +1018,7 @@ def analyze(is_hourly=True):
         print(f"خطأ: {e}")
         send(f"⚠️ خطأ: {str(e)}")
 
-send("🚀 النظام v7.0 | Confluence + OB + Candles + Narrative | جاهز للتداول!")
+send("🚀 النظام v8.0 | 10 محركات تحليل | Smart Monitor + Kill Zones + Analytics | جاهز!")
 last_report_date = ""
 cycle = 0
 # ═══════════════════════════════
