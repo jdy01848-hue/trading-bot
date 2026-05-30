@@ -780,6 +780,23 @@ def analyze(is_hourly=True):
         bonus = 0
         if near_fib: bonus += 10
         if has_liq:  bonus += 10
+
+        # Volume Bonus
+        try:
+            vol_msg, vol_score, vol_ratio = get_volume_summary(closes1, highs1, lows1)
+            if vol_score >= 60: bonus += 15
+            elif vol_score >= 35: bonus += 8
+        except:
+            vol_msg, vol_score, vol_ratio = "⚠️ خطأ", 0, 1.0
+
+        # Session Manipulation Bonus
+        try:
+            manip_msg, manip_score, manip_type = get_manipulation_summary(
+                highs1, lows1, closes1, hour_utc)
+            if manip_score >= 60: bonus += 20
+            elif manip_score >= 30: bonus += 10
+        except:
+            manip_msg, manip_score, manip_type = "✅ لا تلاعب", 0, None
         cf_bonus = 0
         if cf_buy > cf_sell and cf_buy >= 40:
             cf_bonus = min(round(cf_buy * 0.3), 25)
