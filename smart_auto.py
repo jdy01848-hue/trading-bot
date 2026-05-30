@@ -1,5 +1,6 @@
 import requests
 from bos_choch import detect_bos_choch, find_swing_points
+from smart_monitor import save_signal, monitor as smart_monitor_run
 from order_blocks import ob_signal
 from ai_model import ai_boost, train_from_results
 from auto_tracker import save_trade
@@ -25,6 +26,9 @@ def run_tracker():
 
 tracker_thread = threading.Thread(target=run_tracker, daemon=True)
 tracker_thread.start()
+
+monitor_thread = threading.Thread(target=smart_monitor_run, daemon=True)
+monitor_thread.start()
 from datetime import datetime, timezone
 
 TOKEN = "8793823731:AAG1TKA6-6SZzqc03aAV3UWnOWgrPpgZFSA"
@@ -977,6 +981,17 @@ def analyze(is_hourly=True):
             print(msg)
             send(msg)
             if sl != 0 and confidence >= 65:
+                sl_dist = abs(price - sl)
+                _dir = "BUY" if "BUY" in final else "SELL"
+                if _dir == "BUY":
+                    _tp1 = round(price + sl_dist, 2)
+                    _tp2 = round(price + sl_dist * 2, 2)
+                    _tp3 = round(price + sl_dist * 3, 2)
+                else:
+                    _tp1 = round(price - sl_dist, 2)
+                    _tp2 = round(price - sl_dist * 2, 2)
+                    _tp3 = round(price - sl_dist * 3, 2)
+                save_signal(_dir, price, sl, _tp1, _tp2, _tp3, confidence)
                 direction_str = "BUY" if "BUY" in final else "SELL"
                 send_recommendation(direction_str, price, sl, adx4, confidence, r1, reasons)
         else:
