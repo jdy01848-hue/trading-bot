@@ -33,6 +33,26 @@ TD_KEY = "6e9a8257a2d04b80b56b022707232bff"
 NEWS_KEY = "9233c3106a144d7ebfce54e081f46603"
 BALANCE = 30
 RISK_PERCENT = 1
+CONSECUTIVE_LOSSES = 0
+CONSECUTIVE_WINS = 0
+
+def get_adaptive_risk():
+    global CONSECUTIVE_LOSSES, CONSECUTIVE_WINS
+    try:
+        lines = open("results.txt").readlines()
+        last3 = [l for l in lines[-3:]]
+        losses = sum(1 for l in last3 if "LOSS" in l)
+        wins   = sum(1 for l in last3 if "WIN"  in l)
+        if losses == 3:
+            return 0.5  # خفض المخاطرة 50%
+        elif losses == 2:
+            return 0.75 # خفض المخاطرة 25%
+        elif wins == 3:
+            return 1.25 # رفع المخاطرة قليلاً
+        else:
+            return 1.0  # طبيعي
+    except:
+        return 1.0
 last_report_date = ""
 last_signal = ""
 
@@ -788,7 +808,8 @@ def analyze(is_hourly=True):
                 hour_utc, is_exhausted_main)
             confidence = min(confidence + bonus + cf_bonus, 100)
             sl, tp, rr = calc_sl_tp("BUY", price, atr, adx4)
-            lots = calc_position_size(BALANCE, RISK_PERCENT, price, sl)
+            adaptive = get_adaptive_risk()
+            lots = calc_position_size(BALANCE, RISK_PERCENT * adaptive, price, sl)
             risk_usd = round(BALANCE*RISK_PERCENT/100, 2)
             if confidence >= 80:
                 final = "🟢 BUY قوي 🔥"
