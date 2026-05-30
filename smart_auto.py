@@ -8,6 +8,7 @@ from narrative import build_narrative
 from confluence import calc_confluence
 from candle_patterns import candle_signal
 from telegram_bot import listener_thread, send_trade_buttons
+from price_monitor import save_active_trade, check_trade
 import time
 import threading
 from auto_tracker import check_trade
