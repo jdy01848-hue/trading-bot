@@ -614,7 +614,7 @@ def send_recommendation(direction, price, sl, adx, confidence, rsi, reasons):
         print(f"خطأ توصية: {e}")
 
 def analyze_tf(interval, outputsize=100):
-    closes, highs, lows = get_data(interval, outputsize)
+    closes, highs, lows, _ = get_data(interval, outputsize)
     rsi        = calc_rsi(closes)  # مصلح
     ma20       = calc_ma(closes, 20)
     ma50       = calc_ma(closes, 50)
@@ -675,7 +675,7 @@ def analyze(is_hourly=True):
         time.sleep(12)
         s15, r15, t15, m15, ms15, atr15, sup15, res15, str15, b15, st15, stype15, adx15, str15_, exh15, exhr15 = analyze_tf("15min")
 
-        price_data, _, _ = get_data("5min", 2)
+        price_data, _, _, _ = get_data("5min", 2)
         # السعر اللحظي الدقيق
         try:
             td_live = requests.get("https://api.twelvedata.com/price",
@@ -717,31 +717,36 @@ def analyze(is_hourly=True):
             news_impact, hour_utc, 0)
 
         # Fibonacci Engine
-        fib_data, fib_highs, fib_lows = get_data("4h", 60)
+        fib_data, fib_highs, fib_lows, _ = get_data("4h", 60)
         fib_direction = "DOWN" if b4 == "BEARISH" else "UP"
         fib_levels, fib_high, fib_low = calc_fibonacci(fib_highs, fib_lows, fib_direction)
         nearest_fib, fib_dist, near_fib = get_nearest_fib(price_data[-1], fib_levels, atr1)
 
+        # Liquidity Engine (مبكر للاستخدام في Manipulation)
+        liq_data, liq_highs, liq_lows, _ = get_data("1h", 50)
+        has_liq, liq_score, liq_signals, liq_high, liq_low = liquidity_engine(
+            liq_highs, liq_lows, liq_data, atr1)
+
         # Session Manipulation
         manip_msg, manip_score, manip_type = get_manipulation_summary(
-            highs1, lows1, closes1, hour_utc)
+            liq_highs, liq_lows, liq_data, hour_utc)
 
         # Volume Engine
-        vol_msg, vol_score, vol_ratio = get_volume_summary(closes1, highs1, lows1)
+        vol_msg, vol_score, vol_ratio = get_volume_summary(liq_data, liq_highs, liq_lows)
 
         # Liquidity Engine
-        liq_data, liq_highs, liq_lows = get_data("1h", 50)
+        liq_data, liq_highs, liq_lows, _ = get_data("1h", 50)
         has_liq, liq_score, liq_signals, liq_high, liq_low = liquidity_engine(
             liq_highs, liq_lows, liq_data, atr1)
 
         # Compression Detection
-        price_list, highs_list, lows_list = get_data("1h", 30)
+        price_list, highs_list, lows_list, _ = get_data("1h", 30)
         bos_r = detect_bos_choch(price_list, highs_list, lows_list)
         ob_signals, obs = ob_signal(price_list, highs_list, lows_list, atr1)
         ob_text = " | ".join(ob_signals) if ob_signals else "⚪ لا OB قريب"
         # كشف أنماط الشموع
         try:
-            closes_c, highs_c, lows_c, opens_1h = get_data("1h", 30)
+            closes_c, highs_c, lows_c, _, opens_1h = get_data("1h", 30)
             candle_text, candle_dir, candle_strength = candle_signal(opens_1h, highs_list, lows_list, price_list, atr1)
         except:
             candle_text, candle_dir, candle_strength = "⚪ لا نمط واضح", "NEUTRAL", 0
@@ -783,7 +788,7 @@ def analyze(is_hourly=True):
 
         # Volume Bonus
         try:
-            vol_msg, vol_score, vol_ratio = get_volume_summary(closes1, highs1, lows1)
+            vol_msg, vol_score, vol_ratio = get_volume_summary(price_list, highs_list, lows_list)
             if vol_score >= 60: bonus += 15
             elif vol_score >= 35: bonus += 8
         except:
@@ -792,7 +797,7 @@ def analyze(is_hourly=True):
         # Session Manipulation Bonus
         try:
             manip_msg, manip_score, manip_type = get_manipulation_summary(
-                highs1, lows1, closes1, hour_utc)
+                liq_highs, liq_lows, liq_data, hour_utc)
             if manip_score >= 60: bonus += 20
             elif manip_score >= 30: bonus += 10
         except:
