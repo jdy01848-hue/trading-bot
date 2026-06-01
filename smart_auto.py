@@ -336,7 +336,7 @@ def quality_score(direction, adx_4h, adx_1h, bias_4h, bias_1h,
     elif session_pts >= 7: details.append("جلسة جيدة✅")
 
     if is_pullback:   score = int(score * 0.7); details.append("Pullback⚠️")
-    if is_exhausted:  score = int(score * 0.5); details.append("إرهاق⚠️")
+    if is_exhausted:  score = int(score * 0.8); details.append("إرهاق⚠️")
 
     confidence = min(round(score), 100)
     if confidence >= 80:   grade = "🔥 ممتاز"
@@ -670,6 +670,7 @@ def analyze(is_hourly=True):
             session_score = min(session_score + 5, 15)
 
         s4,  r4,  t4,  m4,  ms4,  atr4,  sup4,  res4,  str4,  b4,  st4,  stype4,  adx4,  str4_,  exh4,  exhr4  = analyze_tf("4h")
+        time.sleep(15)
         time.sleep(12)
         s1,  r1,  t1,  m1,  ms1,  atr1,  sup1,  res1,  str1,  b1,  st1,  stype1,  adx1,  str1_,  exh1,  exhr1  = analyze_tf("1h")
         time.sleep(12)
@@ -817,6 +818,10 @@ def analyze(is_hourly=True):
             detail = "سوق متقلب جداً"
             blocks = ["تقلب عالي⛔"]
         elif exh_count >= 2 or is_exhausted_main:
+            confidence, grade, reasons = quality_score(
+                "SELL", adx4, adx1, b4, b1, r1, r15,
+                m1, ms1, news_impact, is_pullback,
+                hour_utc, is_exhausted_main)
             # Pullback Engine
             pb_ready, pb_score, pb_signals = calc_pullback_engine(
                 price_data, [], [], b4, r1, adx4)
