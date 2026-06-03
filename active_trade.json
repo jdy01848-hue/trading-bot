@@ -1,1 +1,1 @@
-{"direction": "SELL", "entry": 4417.8, "sl": 4454.76, "tp": 4325.4, "time": "2026-05-28 10:26"}
+{"direction": "SELL", "entry": 4445.43, "sl": 4479.31, "tp1": 4411.55, "tp2": 4377.67, "tp3": 4343.79, "confidence": 80, "tp1_hit": false, "tp2_hit": false, "tp3_hit": false, "active": true, "time": "2026-06-03 17:02", "max_profit": 1005.34, "smart_exit": false}

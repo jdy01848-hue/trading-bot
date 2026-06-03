@@ -82,14 +82,3 @@ def generate_recommendation(direction, price, sl, atr, adx, confidence, rsi, rea
     return msg
 
 # اختبار
-msg = generate_recommendation(
-    direction="SELL",
-    price=4658.0,
-    sl=4722.0,
-    atr=16.0,
-    adx=63.0,
-    confidence=77,
-    rsi=27.0,
-    reasons=["ترند عنيف✅", "هيكل متوافق✅", "MACD✅", "أخبار آمنة✅"]
-)
-print(msg)

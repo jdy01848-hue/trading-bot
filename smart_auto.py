@@ -664,13 +664,17 @@ def analyze(is_hourly=True):
         elif weekday == 5:  # السبت
             print("🔴 عطلة"); return
 
+        if hour_utc < 8 and cycle % 2 != 0:
+            print("😴 آسيا - تحليل كل 30 دقيقة")
+            return
+
         time_msg, session_score = get_session(hour_utc)
         in_kill_zone, kz_msg = is_kill_zone(hour_utc)
         if in_kill_zone:
             session_score = min(session_score + 5, 15)
 
         s4,  r4,  t4,  m4,  ms4,  atr4,  sup4,  res4,  str4,  b4,  st4,  stype4,  adx4,  str4_,  exh4,  exhr4  = analyze_tf("4h")
-        time.sleep(15)
+        time.sleep(20)
         time.sleep(12)
         s1,  r1,  t1,  m1,  ms1,  atr1,  sup1,  res1,  str1,  b1,  st1,  stype1,  adx1,  str1_,  exh1,  exhr1  = analyze_tf("1h")
         time.sleep(12)
@@ -724,6 +728,7 @@ def analyze(is_hourly=True):
         nearest_fib, fib_dist, near_fib = get_nearest_fib(price_data[-1], fib_levels, atr1)
 
         # Liquidity Engine (مبكر للاستخدام في Manipulation)
+        # Liquidity Engine
         liq_data, liq_highs, liq_lows, _ = get_data("1h", 50)
         has_liq, liq_score, liq_signals, liq_high, liq_low = liquidity_engine(
             liq_highs, liq_lows, liq_data, atr1)
@@ -1020,7 +1025,7 @@ def analyze(is_hourly=True):
                     _tp3 = round(price - sl_dist * 3, 2)
                 save_signal(_dir, price, sl, _tp1, _tp2, _tp3, confidence)
                 direction_str = "BUY" if "BUY" in final else "SELL"
-                send_recommendation(direction_str, price, sl, adx4, confidence, r1, reasons)
+                send_recommendation(direction_str, float(price), float(sl), float(adx4), confidence, float(r1), reasons)
         else:
             print(f"✅ {final} | {confidence}% | {local_now.strftime('%H:%M')}")
 
