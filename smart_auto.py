@@ -29,6 +29,9 @@ tracker_thread.start()
 
 monitor_thread = threading.Thread(target=smart_monitor_run, daemon=True)
 monitor_thread.start()
+
+buttons_thread = threading.Thread(target=listen_buttons, daemon=True)
+buttons_thread.start()
 from datetime import datetime, timezone
 
 TOKEN = "8793823731:AAG1TKA6-6SZzqc03aAV3UWnOWgrPpgZFSA"
@@ -1026,6 +1029,9 @@ def analyze(is_hourly=True):
                 save_signal(_dir, price, sl, _tp1, _tp2, _tp3, confidence)
                 direction_str = "BUY" if "BUY" in final else "SELL"
                 send_recommendation(direction_str, float(price), float(sl), float(adx4), confidence, float(r1), reasons)
+                import time as _t
+                trade_id = str(int(_t.time()))
+                send_with_buttons("🎯 سجّل نتيجة صفقتك:", trade_id)
         else:
             print(f"✅ {final} | {confidence}% | {local_now.strftime('%H:%M')}")
 
