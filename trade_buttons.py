@@ -147,9 +147,9 @@ def handle_button(callback_data):
 
 def calc_profit(direction, entry, exit_price):
     if direction == "BUY":
-        return round((exit_price - entry) * 100, 2)
+        return round((exit_price - entry), 2)
     else:
-        return round((entry - exit_price) * 100, 2)
+        return round((entry - exit_price), 2)
 
 def log_result(result_type, profit, trade):
     try:
