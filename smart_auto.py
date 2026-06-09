@@ -121,8 +121,8 @@ def get_data(interval, outputsize=100):
 
 
 def calc_rsi(closes, period=14):
-    # إصلاح RSI - نستخدم آخر شمعة مكتملة فقط
-    if len(closes) < period + 1:
+    # نستخدم آخر 3 شموع مكتملة للاستقرار
+    if len(closes) < period + 3:
         return 50
     closes = closes[:-1]  # نحذف الشمعة الأخيرة غير المكتملة
     deltas = [closes[i]-closes[i-1] for i in range(1, len(closes))]
@@ -916,7 +916,18 @@ def analyze(is_hourly=True):
                 detail = "السوق يستعد — " + " | ".join(comp_signals[:2])
             else:
                 final = "⚪ NO TRADE"
-                detail = " | ".join(neg_blocks) if neg_blocks else "الإطارات غير متوافقة"
+                if buy_count == 1 and sell_count == 0:
+                    detail = "إطار واحد BUY فقط — انتظر تأكيد"
+                elif sell_count == 1 and buy_count == 0:
+                    detail = "إطار واحد SELL فقط — انتظر تأكيد"
+                elif buy_count == 0 and sell_count == 0:
+                    detail = "لا اتجاه واضح — سوق عرضي"
+                elif cf_buy > cf_sell and sell_count >= 2:
+                    detail = "تعارض: Confluence يفضل BUY"
+                elif cf_sell > cf_buy and buy_count >= 2:
+                    detail = "تعارض: Confluence يفضل SELL"
+                else:
+                    detail = " | ".join(neg_blocks) if neg_blocks else "الإطارات غير متوافقة"
 
         # تحديث grade بعد البونص
         if confidence >= 80:   grade = "🔥 ممتاز"
