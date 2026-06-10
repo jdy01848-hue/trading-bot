@@ -841,7 +841,7 @@ def analyze(is_hourly=True):
                 final = "⏳ WAIT"
                 detail = "انتظر Pullback " + str(pb_score) + "% | " + (" | ".join(pb_signals[:2]) if pb_signals else "السوق مرهق")
             blocks = exh_reasons_main
-        elif buy_count >= 2 and "DOWN" not in st4 and "EXTREME DOWN" not in st4 and r1 < 65 and session_score >= 7 and cf_buy >= cf_sell:
+        elif buy_count >= 2 and "DOWN" not in st4 and "EXTREME DOWN" not in st4 and r1 < 65 and session_score >= 7 and (cf_buy >= cf_sell or buy_count == 3):
             confidence, grade, reasons = quality_score(
                 "BUY", adx4, adx1, b4, b1, r1, r15,
                 m1, ms1, news_impact, is_pullback,
@@ -874,7 +874,7 @@ def analyze(is_hourly=True):
                 final = "⚪ NO TRADE"
                 detail = f"جودة منخفضة ({confidence}%)"
                 sl = tp = 0
-        elif sell_count >= 2 and session_score >= 7 and r1 > 35 and cf_sell >= cf_buy:
+        elif sell_count >= 2 and session_score >= 7 and r1 > 35 and (cf_sell >= cf_buy or sell_count == 3):
             confidence, grade, reasons = quality_score(
                 "SELL", adx4, adx1, b4, b1, r1, r15,
                 m1, ms1, news_impact, is_pullback,
