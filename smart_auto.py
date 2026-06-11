@@ -3,8 +3,25 @@ import json
 import time
 from datetime import datetime
 
+# الإعدادات الأساسية
 TD_KEY = "6e9a8257a2d04b80b56b022707232bff"
 SYMBOL = "XAU/USD"
+
+# 🔴 التوكن الجديد والـ ID الصحيح المستخرج لحسابك الحين
+TELEGRAM_TOKEN = "8793823731:AAG1TKA6-6SZzqc03aAV3UWnOWgrPpgZFSA"
+TELEGRAM_CHAT_ID = "5902098963"
+
+def send_telegram(message):
+    """إرسال الإشارات والتقارير مباشرة إلى هاتفك عبر تليجرام"""
+    try:
+        url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+        payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "Markdown"}
+        response = requests.post(url, json=payload, timeout=10)
+        res_data = response.json()
+        if not res_data.get("ok"):
+            print(f"\n❌ خطأ من سيرفر تليجرام: {res_data.get('description')}")
+    except Exception as e:
+        print(f"\n❌ فشل الإرسال لتليجرام: {e}")
 
 def get_live_data(interval="1h", outputsize=100):
     url = "https://api.twelvedata.com/time_series"                            
@@ -66,12 +83,15 @@ def start_live_bot():
     print("✅ Smart Monitor جاهز")
     print("✅ Order Blocks جاهز")
     print("✅ AI Analyst (Gemini) جاهز")
+    print("✅ محرك Telegram جاهز ومربوط بالحساب الصحيح")
     print("🚀 البوت الآن في وضع المراقبة الحية لأسواق الذهب (XAU/USD)...")
     print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     
+    # رسالة ترحيبية فورية ستصل إلى حساب تليجرام الخاص بك الآن!
+    send_telegram("🚀 *يا مالك، النظام v8.9 المطور يعمل الآن بنجاح!*\n🛡️ تم ربط حسابك وتفعيل فلاتر الـ Order Blocks ومحرك الـ AI لمراقبة الذهب.")
+    
     while True:
         try:
-            # 1. جلب البيانات الحية الحالية
             data_1h = get_live_data("1h", 100)
             data_4h = get_live_data("4h", 50)
             
@@ -84,7 +104,6 @@ def start_live_bot():
             highs_4h  = [float(x['high'])  for x in data_4h]
             lows_4h   = [float(x['low'])   for x in data_4h]
             
-            # 2. حساب المؤشرات الحية للشمعة الأخيرة المغلقة
             rsi = calc_rsi(closes_1h)
             atr = calc_atr(highs_1h, lows_1h, closes_1h)
             adx, _, _ = calc_adx(highs_1h, lows_1h, closes_1h)
@@ -97,7 +116,6 @@ def start_live_bot():
             
             print(f"⏳ [تحديث {current_time}] السعر الحالي: {current_price} | RSI: {rsi} | ADX (4H): {adx4}", end="\r")
             
-            # 3. فحص شروط الدخول الحية
             direction = None
             if adx4 >= 25 and plus4 > minus4 and rsi < 45 and adx >= 20 and current_price <= (bull_ob * 1.002):
                 direction = "BUY"
@@ -105,7 +123,6 @@ def start_live_bot():
                 direction = "SELL"
                 
             if direction:
-                # تشغيل مصفاة الـ AI الحية للشمعة الحالية
                 ai_status = ai_analyst_filter(direction, opens_1h[-1], closes_1h[-1], highs_1h[-1], lows_1h[-1])
                 
                 if ai_status == "CONFIRMED":
@@ -115,18 +132,24 @@ def start_live_bot():
                     sl = current_price - (sl_mult * atr) if direction == "BUY" else current_price + (sl_mult * atr)
                     tp = current_price + (tp_mult * atr) if direction == "BUY" else current_price - (tp_mult * atr)
                     
-                    print(f"\n🚨 🔥 [إشارة حيّة!] تم رصد فرصة {direction} بواسطة المحرك والـ AI!")
-                    print(f"🎯 سعر الدخول الحقيقي : {current_price}")
-                    print(f"🛑 وقف الخسارة (SL)  : {round(sl, 2)}")
-                    print(f"💰 جني الأرباح  (TP)  : {round(tp, 2)}")
-                    print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                    signal_msg = (
+                        f"🚨 *إشارة حيّة مؤكدة من الـ AI!* 🚨\n"
+                        f"━━━━━━━━━━━━━━━━━━━━\n"
+                        f"📈 الزوج: `XAU/USD` (الذهب)\n"
+                        f"نوع الصفقة: *{direction}*\n"
+                        f"🎯 سعر الدخول الحالي: `{current_price}`\n"
+                        f"🛑 وقف الخسارة (SL): `{round(sl, 2)}`\n"
+                        f"💰 جني الأرباح (TP): `{round(tp, 2)}`\n"
+                        f"━━━━━━━━━━━━━━━━━━━━\n"
+                        f"⏰ الوقت: {current_time}"
+                    )
                     
-                    # لمنع تكرار نفس الإشارة، ينام البوت لمدة ساعة كاملة حتى إغلاق الشمعة التالية
+                    print(f"\n🚨 [إشارة حيّة!] تم الإرسال إلى تليجرام بنجاح!")
+                    send_telegram(signal_msg)
                     time.sleep(3600)
                 else:
-                    print(f"\n🛡️ تم رصد فرصة رياضية {direction} ولكن الـ AI Analyst رفضها لحمايتك.")
+                    print(f"\n🛡️ فرصة {direction} رُفضت بواسطة الـ AI. لم يتم الإرسال.")
             
-            # فحص كل 60 ثانية لتحديث البيانات
             time.sleep(60)
             
         except Exception as e:
