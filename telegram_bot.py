@@ -83,7 +83,11 @@ def handle_command(message):
 
     if text == "/now":
         send(chat_id, "🔍 جاري التحليل الفوري...")
-        os.system("timeout 90 python smart_auto.py &")
+        try:
+            from smart_auto import analyze
+            analyze(is_hourly=True)
+        except Exception as e:
+            send(chat_id, f"⚠️ خطأ بالتحليل الفوري: {e}")
 
     elif text == "/stats":
         try:
