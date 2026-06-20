@@ -86,6 +86,7 @@ def handle_command(message):
         try:
             from smart_auto import analyze
             analyze(is_hourly=True)
+            send(chat_id, "✅ إذا لم يظهر تحليل أعلاه، فالسوق مغلق حالياً (عطلة نهاية الأسبوع)")
         except Exception as e:
             send(chat_id, f"⚠️ خطأ بالتحليل الفوري: {e}")
 
