@@ -107,9 +107,40 @@ def handle_command(message):
             send(chat_id, "لا توجد نتائج بعد")
 
     elif text == "/status":
-        send(chat_id, """✅ البوت يعمل
-🤖 النظام v7.0
-⏱ كل 15 دقيقة""")
+        send(chat_id, """✅ البوت يعمل بكامل طاقته
+━━━━━━━━━━━━━━━━
+🤖 النظام v9.1 الاحترافي
+📊 15 محرك تحليلي متكامل:
+
+1️⃣ تحليل 3 إطارات زمنية (4H+1H+15M)
+2️⃣ Market Quality vs Entry Quality
+3️⃣ Exhaustion Detection
+4️⃣ Pullback Engine
+5️⃣ Compression Engine
+6️⃣ Liquidity Engine
+7️⃣ Fibonacci Engine
+8️⃣ BOS/CHoCH Detection
+9️⃣ Order Blocks
+🔟 Confluence Engine
+1️⃣1️⃣ Candle Patterns
+1️⃣2️⃣ Volume Engine
+1️⃣3️⃣ Session Manipulation
+1️⃣4️⃣ AI Analyst (Gemini)
+1️⃣5️⃣ Smart Monitor (مراقبة تلقائية)
+
+━━━━━━━━━━━━━━━━
+⚙️ الإعدادات الحالية:
+⏱ التحليل: كل 15 دقيقة (لندن/نيويورك)
+😴 جلسة آسيا: كل 30 دقيقة فقط
+💰 رأس المال: $100
+📊 مخاطرة: 1% (Adaptive Risk)
+🎯 حد الدخول: Score >= 65%
+🛡 فلاتر: أخبار + عطلات + إرهاق السوق
+
+━━━━━━━━━━━━━━━━
+📡 مصدر البيانات: Twelve Data API
+🔔 التنبيهات: تلقائية + أزرار تفاعلية
+📈 المصدر: Telegram Bot""")
 
     elif text == "/start" or text == "القائمة الرئيسية 🏠":
         requests.post(
