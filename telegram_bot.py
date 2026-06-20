@@ -115,6 +115,15 @@ def handle_command(message):
         except:
             send(chat_id, "⚠️ استخدم الصيغة: /setbalance 100")
 
+    elif text.replace(".","").isdigit():
+        try:
+            amount = float(text)
+            with open("balance.txt","w") as f:
+                f.write(str(amount))
+            send(chat_id, f"✅ تم تحديث رأس المال إلى ${amount}\nسيُطبّق في الدورة القادمة")
+        except:
+            pass
+
     elif text == "/status":
         send(chat_id, """✅ البوت يعمل بكامل طاقته
 ━━━━━━━━━━━━━━━━
