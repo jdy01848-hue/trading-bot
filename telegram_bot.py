@@ -106,6 +106,15 @@ def handle_command(message):
         except:
             send(chat_id, "لا توجد نتائج بعد")
 
+    elif text.startswith("/setbalance"):
+        try:
+            amount = text.split(" ")[1]
+            with open("balance.txt","w") as f:
+                f.write(str(float(amount)))
+            send(chat_id, f"✅ تم تحديث رأس المال إلى ${amount}\nسيُطبّق في الدورة القادمة")
+        except:
+            send(chat_id, "⚠️ استخدم الصيغة: /setbalance 100")
+
     elif text == "/status":
         send(chat_id, """✅ البوت يعمل بكامل طاقته
 ━━━━━━━━━━━━━━━━

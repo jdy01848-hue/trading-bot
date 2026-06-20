@@ -39,7 +39,11 @@ TOKEN = "8793823731:AAG1TKA6-6SZzqc03aAV3UWnOWgrPpgZFSA"
 CHAT_ID = "5902098963"
 TD_KEY = "6e9a8257a2d04b80b56b022707232bff"
 NEWS_KEY = "9233c3106a144d7ebfce54e081f46603"
-BALANCE = 30
+try:
+    with open("balance.txt","r") as f:
+        BALANCE = float(f.read().strip())
+except:
+    BALANCE = 30
 RISK_PERCENT = 1
 CONSECUTIVE_LOSSES = 0
 CONSECUTIVE_WINS = 0
