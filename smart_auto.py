@@ -845,7 +845,7 @@ def analyze(is_hourly=True):
                 final = "⏳ WAIT"
                 detail = "انتظر Pullback " + str(pb_score) + "% | " + (" | ".join(pb_signals[:2]) if pb_signals else "السوق مرهق")
             blocks = exh_reasons_main
-        elif buy_count >= 2 and "DOWN" not in st4 and "EXTREME DOWN" not in st4 and r1 < 65 and session_score >= 7 and (cf_buy >= cf_sell or buy_count == 3):
+        elif buy_count >= 2 and "DOWN" not in st4 and "EXTREME DOWN" not in st4 and r1 < 65 and session_score >= 7 and (cf_buy >= cf_sell or buy_count == 3) and has_liq and manip_score < 50:
             confidence, grade, reasons = quality_score(
                 "BUY", adx4, adx1, b4, b1, r1, r15,
                 m1, ms1, news_impact, is_pullback,
@@ -862,7 +862,7 @@ def analyze(is_hourly=True):
 🥈 TP2: {round(price + abs(price-tp)*0.7, 2) if "BUY" in final else round(price - abs(price-tp)*0.7, 2)} → أغلق 40%
 🥉 TP3: {tp} → أغلق 20%
 ⚠️ بعد TP1 → حرك SL للدخول
-💼 حجم: {lots} | خطر: ${risk_usd}"""
+📊 RR: 1:{round(abs(tp-price)/abs(price-sl),1) if abs(price-sl)>0 else 0}"""
             elif confidence >= 65:
                 final = "🟢 BUY جيد"
                 detail = f"""🛑 SL: {sl}
@@ -870,7 +870,7 @@ def analyze(is_hourly=True):
 🥈 TP2: {round(price + abs(price-tp)*0.7, 2) if "BUY" in final else round(price - abs(price-tp)*0.7, 2)} → أغلق 40%
 🥉 TP3: {tp} → أغلق 20%
 ⚠️ بعد TP1 → حرك SL للدخول
-💼 حجم: {lots} | خطر: ${risk_usd}"""
+📊 RR: 1:{round(abs(tp-price)/abs(price-sl),1) if abs(price-sl)>0 else 0}"""
             elif confidence >= 50:
                 final = "🟡 BUY مقبول"
                 detail = f"SL: {sl} | TP: {tp} | راقب"
@@ -878,7 +878,7 @@ def analyze(is_hourly=True):
                 final = "⚪ NO TRADE"
                 detail = f"جودة منخفضة ({confidence}%)"
                 sl = tp = 0
-        elif sell_count >= 2 and session_score >= 7 and r1 > 35 and (cf_sell >= cf_buy or sell_count == 3):
+        elif sell_count >= 2 and session_score >= 7 and r1 > 35 and (cf_sell >= cf_buy or sell_count == 3) and has_liq and manip_score < 50:
             confidence, grade, reasons = quality_score(
                 "SELL", adx4, adx1, b4, b1, r1, r15,
                 m1, ms1, news_impact, is_pullback,
@@ -893,7 +893,7 @@ def analyze(is_hourly=True):
 🥈 TP2: {round(price + abs(price-tp)*0.7, 2) if "BUY" in final else round(price - abs(price-tp)*0.7, 2)} → أغلق 40%
 🥉 TP3: {tp} → أغلق 20%
 ⚠️ بعد TP1 → حرك SL للدخول
-💼 حجم: {lots} | خطر: ${risk_usd}"""
+📊 RR: 1:{round(abs(tp-price)/abs(price-sl),1) if abs(price-sl)>0 else 0}"""
             elif confidence >= 65:
                 final = "🔴 SELL جيد"
                 detail = f"""🛑 SL: {sl}
@@ -901,7 +901,7 @@ def analyze(is_hourly=True):
 🥈 TP2: {round(price + abs(price-tp)*0.7, 2) if "BUY" in final else round(price - abs(price-tp)*0.7, 2)} → أغلق 40%
 🥉 TP3: {tp} → أغلق 20%
 ⚠️ بعد TP1 → حرك SL للدخول
-💼 حجم: {lots} | خطر: ${risk_usd}"""
+📊 RR: 1:{round(abs(tp-price)/abs(price-sl),1) if abs(price-sl)>0 else 0}"""
             elif confidence >= 50:
                 final = "🟡 SELL مقبول"
                 detail = f"SL: {sl} | TP: {tp} | راقب"

@@ -1,0 +1,22 @@
+✅ Confluence Engine جاهز
+✅ Order Blocks جاهز
+✅ Candle Patterns جاهز
+✅ Session Manipulation Engine جاهز
+✅ Full Backtesting Engine جاهز
+🔄 جلب البيانات (1H, 4H, 15M)...
+✅ 5000 شمعة 1H | 1500 شمعة 4H | 5000 شمعة 15M
+
+📊 نتائج Backtesting الكامل (بمحركات النظام الحقيقية)
+━━━━━━━━━━━━━━━━
+📈 إجمالي الصفقات : 144
+✅ رابحة          : 36
+❌ خاسرة          : 108
+⏳ Timeout        : 30
+🎯 Win Rate       : 25.0%
+💰 صافي الربح    : -1207.68 نقطة
+⚠️ أخطاء          : 0
+━━━━━━━━━━━━━━━━
+🟢 BUY:  114 صفقة | دقة 21.1%
+🔴 SELL: 60 صفقة | دقة 20.0%
+
+✅ تم حفظ 174 صفقة في backtest_full_results.json
