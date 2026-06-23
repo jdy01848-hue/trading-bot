@@ -845,7 +845,7 @@ def analyze(is_hourly=True):
                 final = "⏳ WAIT"
                 detail = "انتظر Pullback " + str(pb_score) + "% | " + (" | ".join(pb_signals[:2]) if pb_signals else "السوق مرهق")
             blocks = exh_reasons_main
-        elif buy_count >= 2 and "DOWN" not in st4 and "EXTREME DOWN" not in st4 and r1 < 65 and session_score >= 7 and (cf_buy >= cf_sell or buy_count == 3) and has_liq and manip_score < 50:
+        elif buy_count >= 2 and "DOWN" not in st4 and "EXTREME DOWN" not in st4 and r1 < 65 and session_score >= 7 and (cf_buy >= cf_sell or buy_count == 3) and has_liq and manip_score < 50 and adx4 >= 20 and adx1 >= 20:
             confidence, grade, reasons = quality_score(
                 "BUY", adx4, adx1, b4, b1, r1, r15,
                 m1, ms1, news_impact, is_pullback,
@@ -878,7 +878,7 @@ def analyze(is_hourly=True):
                 final = "⚪ NO TRADE"
                 detail = f"جودة منخفضة ({confidence}%)"
                 sl = tp = 0
-        elif sell_count >= 2 and session_score >= 7 and r1 > 35 and (cf_sell >= cf_buy or sell_count == 3) and has_liq and manip_score < 50:
+        elif sell_count >= 2 and session_score >= 7 and r1 > 35 and (cf_sell >= cf_buy or sell_count == 3) and has_liq and manip_score < 50 and adx4 >= 20 and adx1 >= 20:
             confidence, grade, reasons = quality_score(
                 "SELL", adx4, adx1, b4, b1, r1, r15,
                 m1, ms1, news_impact, is_pullback,
@@ -1031,7 +1031,19 @@ def analyze(is_hourly=True):
 """
             print(msg)
             send(msg)
-            if sl != 0 and confidence >= 65:
+            # فلتر مطاردة الحركة
+        price_now = price
+        try:
+            import requests as _req
+            _r = _req.get("https://api.twelvedata.com/price",
+                params={"symbol":"XAU/USD","apikey":"6e9a8257a2d04b80b56b022707232bff"},
+                timeout=5)
+            price_now = float(_r.json()['price'])
+        except:
+            pass
+        price_moved = abs(price_now - price) > (atr * 1.5)
+
+        if sl != 0 and confidence >= 70 and not price_moved:
                 sl_dist = abs(price - sl)
                 _dir = "BUY" if "BUY" in final else "SELL"
                 if _dir == "BUY":
